@@ -155,15 +155,11 @@ class Header extends HTMLElement {
     // Find and update the active link
     const links = this.shadowRoot?.querySelectorAll("a");
     links?.forEach((link) => {
-      const href = link?.getAttribute("href")?.replace(/\/$/, ""); // Remove trailing slash from href
+      const href = link?.getAttribute("href")?.replace(/\/$/, "");
 
       // Special case for home page
-      if (href === "/") {
-        const isHome =
-          currentPath === "" ||
-          currentPath === "/" ||
-          currentPath === "/index" ||
-          currentPath === "/index.html";
+      if (href === "/" || href === "") {
+        const isHome = currentPath === "" || currentPath === "/";
 
         link.classList.toggle("active", isHome);
         return;
@@ -174,7 +170,7 @@ class Header extends HTMLElement {
         href === pathWithIndex ||
         href === pathWithoutIndex ||
         href === pathWithTrailingSlash ||
-        (currentPath.startsWith(href + "/") && href !== "/"); // Prevent "/" from matching everything
+        (currentPath.startsWith(href + "/") && href !== "/");
 
       link.classList.toggle("active", isActive);
     });
