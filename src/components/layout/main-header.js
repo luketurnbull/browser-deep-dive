@@ -59,8 +59,7 @@ template.innerHTML = /*html*/ `
         <nav>
           <ul>
             <li><a href="/">Home</a></li>
-            <li><a href="/pages/web-gl/fundamentals">WebGL Fundamentals</a></li>
-            <li><a href="/pages/web-gl/web-components">Web Components</a></li>
+            <li><a href="/pages/web-gl/">Web GL</a></li>
           </ul>
         </nav>
       </div>
@@ -118,7 +117,7 @@ class Header extends HTMLElement {
     return ["page-title"];
   }
 
-  attributeChangedCallback(name, oldValue, newValue) {
+  attributeChangedCallback(name, _, newValue) {
     if (name === "page-title") {
       const titleElement = this.shadowRoot?.querySelector("h1");
       if (titleElement) {

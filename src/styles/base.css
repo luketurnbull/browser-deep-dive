@@ -42,5 +42,5 @@ main-header:not(:defined) * {
 }
 
 ::view-transition-group(root) {
-  animation-duration: 0.3s;
+  animation-duration: 0.1s;
 }
