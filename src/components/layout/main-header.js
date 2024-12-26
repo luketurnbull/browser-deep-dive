@@ -9,11 +9,15 @@ template.innerHTML = /*html*/ `
       position: fixed;
       top: 0;
       z-index: 100;
+      height: var(--header-height, 60px);
     }
 
     header {
       padding: 1rem;
       background: #f5f5f5;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     nav ul {
@@ -33,11 +37,14 @@ template.innerHTML = /*html*/ `
       font-weight: bold;
       border-bottom: 2px solid #0066cc;
     }
+
+    h1 {
+      margin: 0;
+    }
   </style>
 
   <header>
-    <slot name="title"></slot>
-    <p><slot></slot></p>
+    <h1></h1>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
@@ -92,6 +99,19 @@ class Header extends HTMLElement {
 
       link.classList.toggle("active", isActive);
     });
+  }
+
+  static get observedAttributes() {
+    return ["page-title"];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === "page-title") {
+      const titleElement = this.shadowRoot?.querySelector("h1");
+      if (titleElement) {
+        titleElement.textContent = newValue;
+      }
+    }
   }
 }
 

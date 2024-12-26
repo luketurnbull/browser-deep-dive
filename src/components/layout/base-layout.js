@@ -16,9 +16,7 @@ template.innerHTML = /*html*/ `
       margin-top: var(--header-height, 60px);
     }
   </style>
-  <main-header>
-    <slot name="title"></slot>
-  </main-header>
+  <main-header></main-header>
   <main class="main-content">
     <slot></slot>
   </main>
@@ -29,6 +27,19 @@ export class BaseLayout extends HTMLElement {
     super();
     const shadow = this.attachShadow({ mode: "open" });
     shadow.appendChild(template.content.cloneNode(true));
+  }
+
+  static get observedAttributes() {
+    return ["page-title"];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === "page-title") {
+      const header = this.shadowRoot?.querySelector("main-header");
+      if (header) {
+        header.setAttribute("page-title", newValue);
+      }
+    }
   }
 }
 

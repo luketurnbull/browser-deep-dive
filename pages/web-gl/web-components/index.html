@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Web Components and WebGL</title>
+    <link rel="stylesheet" href="/src/styles/base.css" />
     <script type="module" src="/main.js" defer></script>
     <script
       type="module"
@@ -12,8 +13,7 @@
     ></script>
   </head>
   <body>
-    <base-layout>
-      <h1 slot="title">Web Components and WebGL</h1>
+    <base-layout page-title="Web Components and WebGL">
       <triangle-canvas></triangle-canvas>
     </base-layout>
   </body>
