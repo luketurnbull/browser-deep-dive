@@ -2,10 +2,12 @@
 
 import { WebGLCanvas } from "./common/webgl-canvas.js";
 
+// Learnings from https://webgl2fundamentals.org/webgl/lessons/webgl-how-it-works.html
+
 /**
  * @extends {WebGLCanvas}
  */
-export class TriangleCanvas extends WebGLCanvas {
+export class WebGlFundamentalsOne extends WebGLCanvas {
   constructor() {
     super();
   }
@@ -26,20 +28,31 @@ export class TriangleCanvas extends WebGLCanvas {
     if (!gl) return;
 
     const vertexShaderSource = /* glsl */ `#version 300 es
-      in vec4 a_position;
+      in vec2 a_position;
+
+      uniform vec2 u_resolution;
+
+      out vec4 v_color;
 
       void main() {
-          gl_Position = a_position;
+        vec2 zeroToOne = a_position / u_resolution;
+        vec2 zeroToTwo = zeroToOne * 2.0;
+        vec2 clipSpace = zeroToTwo - 1.0;
+
+        gl_Position = vec4(clipSpace, 0, 1);
+        v_color = gl_Position * 0.5 + 0.5;
       }
     `;
 
     const fragmentShaderSource = /* glsl */ `#version 300 es
       precision highp float;
 
+      in vec4 v_color;
+
       out vec4 outColor;
 
       void main() {
-          outColor = vec4(1, 0, 0.0, 1);
+          outColor = v_color;
       }
     `;
 
@@ -55,19 +68,19 @@ export class TriangleCanvas extends WebGLCanvas {
       "a_position"
     );
 
+    const resolutionUniformLocation = gl.getUniformLocation(
+      program,
+      "u_resolution"
+    );
+
     const positionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
-    const positions = [
-      -0.5,
-      -0.5, // bottom left
-      0.5,
-      -0.5, // bottom right
-      0,
-      0.5, // top
-    ];
-
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([100, 100, 400, 400, 800, 100]),
+      gl.STATIC_DRAW
+    );
 
     const vertexArrayObject = gl.createVertexArray();
 
@@ -89,9 +102,16 @@ export class TriangleCanvas extends WebGLCanvas {
       offset
     );
 
+    const noOfTriangles = 1;
+
     gl.useProgram(program);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    gl.uniform2f(
+      resolutionUniformLocation,
+      this.canvas.width,
+      this.canvas.height
+    );
+    gl.drawArrays(gl.TRIANGLES, 0, noOfTriangles * 3);
   }
 }
 
-customElements.define("triangle-canvas", TriangleCanvas);
+customElements.define("webgl-fundamentals-one", WebGlFundamentalsOne);

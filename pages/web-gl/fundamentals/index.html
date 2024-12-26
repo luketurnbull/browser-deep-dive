@@ -5,12 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WebGL Fundamentals</title>
     <link rel="stylesheet" href="/src/styles/base.css" />
+    <style>
+      .canvas-container {
+        width: 100%;
+        height: 500px;
+      }
+    </style>
     <script type="module" src="/main.js" defer></script>
+    <script
+      type="module"
+      src="/src/components/webgl/webgl-fundamentals-one.js"
+      defer
+    ></script>
   </head>
   <body>
     <base-layout page-title="WebGL Fundamentals">
-      <canvas id="demo-canvas"></canvas>
+      <div class="container">
+        <h2>WebGL Fundamentals</h2>
+        <div>
+          <h3>How it works</h3>
+          <p>
+            Code done following
+            <a
+              href="https://webgl2fundamentals.org/webgl/lessons/webgl-how-it-works.html"
+              >WebGL Fundamentals</a
+            >
+            tutorial. I've modified the code to use Web Components.
+          </p>
+          <div class="canvas-container">
+            <webgl-fundamentals-one></webgl-fundamentals-one>
+          </div>
+        </div>
+      </div>
     </base-layout>
-    <script src="./webgl-fundamentals.js" type="module" defer></script>
   </body>
 </html>
