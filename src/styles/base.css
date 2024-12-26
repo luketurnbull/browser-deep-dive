@@ -8,3 +8,39 @@ body {
   margin: 0;
   font-family: "Open Sans", sans-serif;
 }
+
+base-layout,
+main-header {
+  display: block;
+  min-height: var(--header-height, 60px);
+  contain: content;
+}
+
+:not(:defined) {
+  display: block;
+  min-height: var(--header-height, 60px);
+}
+
+.container {
+  padding: 2rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  @media (min-width: 768px) {
+    padding: 4rem;
+  }
+}
+
+base-layout:not(:defined) *,
+main-header:not(:defined) * {
+  visibility: hidden;
+}
+
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-group(root) {
+  animation-duration: 0.3s;
+}

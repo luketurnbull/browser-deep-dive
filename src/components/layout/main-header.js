@@ -10,11 +10,16 @@ template.innerHTML = /*html*/ `
       top: 0;
       z-index: 100;
       height: var(--header-height, 60px);
+      contain: content;
     }
 
     header {
       padding: 1rem;
       background: #f5f5f5;
+      view-transition-name: none;
+    }
+
+    .header-content {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -41,17 +46,25 @@ template.innerHTML = /*html*/ `
     h1 {
       margin: 0;
     }
+
+    nav {
+      view-transition-name: none;
+    }
   </style>
 
   <header>
-    <h1></h1>
-    <nav>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/pages/web-gl/fundamentals">WebGL Fundamentals</a></li>
-        <li><a href="/pages/web-gl/web-components">Web Components</a></li>
-      </ul>
-    </nav>
+    <div class="container">
+      <div class="header-content">
+        <h1></h1>
+        <nav>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/pages/web-gl/fundamentals">WebGL Fundamentals</a></li>
+            <li><a href="/pages/web-gl/web-components">Web Components</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
   </header>
 `;
 

@@ -8,6 +8,7 @@ template.innerHTML = /*html*/ `
     :host {
       display: block;
       width: 100%;
+      contain: content;
     }
 
     .main-content {
