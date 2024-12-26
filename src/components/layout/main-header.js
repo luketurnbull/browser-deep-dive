@@ -10,12 +10,14 @@ template.innerHTML = /*html*/ `
       top: 0;
       z-index: 100;
       height: var(--header-height, 60px);
-      contain: content;
+      contain: layout size;
+      background: #f5f5f5;
     }
 
     header {
       padding: 1rem;
-      background: #f5f5f5;
+      height: var(--header-height, 60px);
+      box-sizing: border-box;
       view-transition-name: none;
     }
 
@@ -23,32 +25,76 @@ template.innerHTML = /*html*/ `
       display: flex;
       justify-content: space-between;
       align-items: center;
+      height: 100%;
     }
 
     nav ul {
       list-style: none;
       padding: 0;
+      margin: 0;
       display: flex;
       gap: 1rem;
+      height: 100%;
+      align-items: center;
+    }
+
+    nav li {
+      position: relative;
+    }
+
+    nav .dropdown {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: #f5f5f5;
+      padding: 0.5rem;
+      min-width: 200px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border-radius: 4px;
+      z-index: 101;
+    }
+
+    nav .dropdown ul {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    nav li:hover .dropdown {
+      display: block;
     }
 
     a {
       text-decoration: none;
       color: #333;
+      padding: 0.5rem;
+      display: block;
+      text-wrap: nowrap;
     }
 
     a.active {
       color: #0066cc;
       font-weight: bold;
-      border-bottom: 2px solid #0066cc;
+    }
+
+    .dropdown a.active {
+      background: #e6f0ff;
+      border-radius: 4px;
     }
 
     h1 {
       margin: 0;
+      min-width: 0;
+      line-height: 1.2;
+      text-wrap: balance;
+      font-size: 1.25rem;
     }
 
     nav {
       view-transition-name: none;
+      height: 100%;
+      display: flex;
+      align-items: center;
     }
   </style>
 
@@ -58,8 +104,22 @@ template.innerHTML = /*html*/ `
         <h1></h1>
         <nav>
           <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/pages/web-gl/">Web GL</a></li>
+            <li>
+              <a href="/">Home</a>
+            </li>
+            <li>
+              <a href="/pages/web-gl/">Web GL</a>
+              <div class="dropdown">
+                <ul>
+                  <li>
+                    <a href="/pages/web-gl/fundamentals/">WebGL Fundamentals</a>
+                  </li>
+                  <li>
+                    <a href="/pages/web-gl/web-components/">Web Components and WebGL</a>
+                  </li>
+                </ul>
+              </div>
+            </li>
           </ul>
         </nav>
       </div>
@@ -92,22 +152,31 @@ class Header extends HTMLElement {
     // Create alternate path versions to check against
     const pathWithIndex = currentPath + "/index.html";
     const pathWithoutIndex = currentPath.replace("/index.html", "");
+    const pathWithTrailingSlash = currentPath + "/";
 
     // Find and update the active link
     const links = this.shadowRoot?.querySelectorAll("a");
     links?.forEach((link) => {
-      const href = link.getAttribute("href");
+      const href = link?.getAttribute("href")?.replace(/\/$/, ""); // Remove trailing slash from href
 
       // Special case for home page
-      if (href === "/" && (currentPath === "" || currentPath === "/")) {
-        link.classList.add("active");
+      if (href === "/") {
+        const isHome =
+          currentPath === "" ||
+          currentPath === "/" ||
+          currentPath === "/index" ||
+          currentPath === "/index.html";
+
+        link.classList.toggle("active", isHome);
         return;
       }
 
       const isActive =
         href === currentPath ||
         href === pathWithIndex ||
-        href === pathWithoutIndex;
+        href === pathWithoutIndex ||
+        href === pathWithTrailingSlash ||
+        (currentPath.startsWith(href + "/") && href !== "/"); // Prevent "/" from matching everything
 
       link.classList.toggle("active", isActive);
     });

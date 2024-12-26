@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
 
 :root {
-  --header-height: 85px;
+  --header-height: 75px;
 }
 
 body {
@@ -42,5 +42,5 @@ main-header:not(:defined) * {
 }
 
 ::view-transition-group(root) {
-  animation-duration: 0.1s;
+  animation-duration: 0.3s;
 }
