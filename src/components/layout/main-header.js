@@ -14,18 +14,20 @@ template.innerHTML = /*html*/ `
       background: #f5f5f5;
     }
 
-    header {
-      padding: 1rem;
-      height: var(--header-height, 60px);
-      box-sizing: border-box;
-      view-transition-name: none;
-    }
-
-    .header-content {
+    .container {
       display: flex;
       justify-content: space-between;
       align-items: center;
       height: 100%;
+      padding: var(--container-padding, 2rem);
+      max-width: var(--container-max-width, 1200px);
+      margin: 0 auto;
+    }
+
+    header {
+      height: var(--header-height, 60px);
+      box-sizing: border-box;
+      view-transition-name: none;
     }
 
     nav ul {
@@ -100,7 +102,6 @@ template.innerHTML = /*html*/ `
 
   <header>
     <div class="container">
-      <div class="header-content">
         <h1></h1>
         <nav>
           <ul>
@@ -122,7 +123,6 @@ template.innerHTML = /*html*/ `
             </li>
           </ul>
         </nav>
-      </div>
     </div>
   </header>
 `;

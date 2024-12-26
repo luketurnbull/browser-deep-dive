@@ -2,6 +2,14 @@
 
 :root {
   --header-height: 75px;
+  --container-padding: 0 2rem;
+  --container-max-width: 1200px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --container-padding: 0 4rem;
+  }
 }
 
 body {
@@ -22,14 +30,9 @@ main-header {
 }
 
 .container {
-  padding: 2rem;
-  width: 100%;
+  padding: var(--container-padding);
   max-width: 1200px;
   margin: 0 auto;
-
-  @media (min-width: 768px) {
-    padding: 4rem;
-  }
 }
 
 base-layout:not(:defined) *,
