@@ -1,6 +1,6 @@
 // @ts-check
 
-import { WebGLCanvas } from "./src/components/webgl/webgl-canvas.js";
+import { WebGLCanvas } from "./common/webgl-canvas.js";
 
 /**
  * @extends {WebGLCanvas}
@@ -26,35 +26,27 @@ export class TriangleCanvas extends WebGLCanvas {
     if (!gl) return;
 
     const vertexShaderSource = /* glsl */ `#version 300 es
-   in vec4 a_position;
+      in vec4 a_position;
 
-   void main() {
-      gl_Position = a_position;
-   }
-`;
+      void main() {
+          gl_Position = a_position;
+      }
+    `;
 
     const fragmentShaderSource = /* glsl */ `#version 300 es
-   precision highp float;
+      precision highp float;
 
-   out vec4 outColor;
+      out vec4 outColor;
 
-   void main() {
-      outColor = vec4(1, 0, 0.0, 1);
-   }
-`;
+      void main() {
+          outColor = vec4(1, 0, 0.0, 1);
+      }
+    `;
 
-    const vertexShader = this.createShader(
-      gl.VERTEX_SHADER,
-      vertexShaderSource
-    );
-    const fragmentShader = this.createShader(
-      gl.FRAGMENT_SHADER,
+    const program = this.createShaderProgram(
+      vertexShaderSource,
       fragmentShaderSource
     );
-
-    if (!vertexShader || !fragmentShader) return;
-
-    const program = this.createProgram(vertexShader, fragmentShader);
 
     if (!program) return;
 
@@ -62,6 +54,7 @@ export class TriangleCanvas extends WebGLCanvas {
       program,
       "a_position"
     );
+
     const positionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
@@ -73,9 +66,11 @@ export class TriangleCanvas extends WebGLCanvas {
       0,
       0.5, // top
     ];
+
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
 
     const vertexArrayObject = gl.createVertexArray();
+
     gl.bindVertexArray(vertexArrayObject);
     gl.enableVertexAttribArray(positionAttributeLocation);
 
@@ -84,6 +79,7 @@ export class TriangleCanvas extends WebGLCanvas {
     const normalize = false;
     const stride = 0;
     const offset = 0;
+
     gl.vertexAttribPointer(
       positionAttributeLocation,
       size,

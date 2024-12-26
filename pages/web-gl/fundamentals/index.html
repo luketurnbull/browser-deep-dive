@@ -4,19 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WebGL Fundamentals</title>
-    <style>
-      body {
-        margin: 0;
-      }
-      canvas {
-        width: 100vw;
-        height: 100vh;
-        display: block;
-      }
-    </style>
+    <link rel="stylesheet" href="/src/styles/base.css" />
+    <script type="module" src="/main.js" defer></script>
   </head>
   <body>
-    <canvas id="demo-canvas"></canvas>
+    <base-layout>
+      <h1 slot="title">WebGL Fundamentals</h1>
+      <canvas id="demo-canvas"></canvas>
+    </base-layout>
     <script src="./webgl-fundamentals.js" type="module" defer></script>
   </body>
 </html>

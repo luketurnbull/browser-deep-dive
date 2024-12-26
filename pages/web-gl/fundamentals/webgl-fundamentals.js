@@ -1,8 +1,8 @@
 // @ts-check
 
-import { createShader } from "./src/utils/webgl/create-shader.js";
-import { createProgram } from "./src/utils/webgl/create-program.js";
-import { resizeCanvasToDisplaySize } from "./src/utils/canvas/resize-canvas.js";
+import { createShader } from "../../../src/utils/webgl/create-shader.js";
+import { createProgram } from "../../../src/utils/webgl/create-program.js";
+import { resizeCanvasToDisplaySize } from "../../../src/utils/canvas/resize-canvas.js";
 
 const vertexShaderSource = /* glsl */ `#version 300 es
    in vec4 a_position;

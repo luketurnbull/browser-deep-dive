@@ -188,6 +188,33 @@ export class WebGLCanvas extends HTMLElement {
   }
 
   /**
+   * Creates a shader program from vertex and fragment shaders
+   * @param {string} vertexShaderSource - The GLSL source code for the vertex shader
+   * @param {string} fragmentShaderSource - The GLSL source code for the fragment shader
+   * @returns {WebGLProgram|null} The created program or null if creation failed
+   */
+  createShaderProgram(vertexShaderSource, fragmentShaderSource) {
+    const gl = this.gl;
+    if (!gl) return null;
+
+    const vertexShader = this.createShader(
+      gl.VERTEX_SHADER,
+      vertexShaderSource
+    );
+    const fragmentShader = this.createShader(
+      gl.FRAGMENT_SHADER,
+      fragmentShaderSource
+    );
+
+    if (!vertexShader || !fragmentShader) {
+      console.error(`Something went wrong creating the shaders`);
+      return null;
+    }
+
+    return this.createProgram(vertexShader, fragmentShader);
+  }
+
+  /**
    * Get the canvas element
    * @returns {HTMLCanvasElement}
    */
