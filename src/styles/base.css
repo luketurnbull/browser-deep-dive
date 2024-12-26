@@ -39,11 +39,3 @@ base-layout:not(:defined) *,
 main-header:not(:defined) * {
   visibility: hidden;
 }
-
-@view-transition {
-  navigation: auto;
-}
-
-::view-transition-group(root) {
-  animation-duration: 0.3s;
-}

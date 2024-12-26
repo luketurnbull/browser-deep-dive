@@ -27,7 +27,6 @@ template.innerHTML = /*html*/ `
     header {
       height: var(--header-height, 60px);
       box-sizing: border-box;
-      view-transition-name: none;
     }
 
     nav ul {
@@ -93,7 +92,6 @@ template.innerHTML = /*html*/ `
     }
 
     nav {
-      view-transition-name: none;
       height: 100%;
       display: flex;
       align-items: center;
