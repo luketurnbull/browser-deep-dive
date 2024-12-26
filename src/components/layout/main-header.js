@@ -113,12 +113,9 @@ template.innerHTML = /*html*/ `
                   <li>
                     <a href="/pages/web-gl/fundamentals/">WebGL Fundamentals</a>
                   </li>
-                  <li>
-                    <a href="/pages/web-gl/web-components/">Web Components and WebGL</a>
-                  </li>
                 </ul>
               </div>
-            </li>
+          </li>
           </ul>
         </nav>
     </div>
