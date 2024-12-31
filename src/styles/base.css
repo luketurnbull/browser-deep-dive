@@ -32,7 +32,6 @@ main-header {
 .container {
   padding: var(--container-padding);
   max-width: 1200px;
-  margin: 6rem auto;
 }
 
 base-layout:not(:defined) *,
