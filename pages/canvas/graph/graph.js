@@ -11,9 +11,11 @@ export default class Graph extends Canvas2D {
   /** @type {number|null} */
   animationFrameId = null;
   /** @type {number} */
-  fovFactor = 60;
+  fovFactor = 200;
   /** @type {Vector3[]} */
   cubePoints = [];
+  /** @type {Vector3} */
+  camera = new Vector3(0, 0, 3);
 
   /**
    * @param {string} canvasElementId - The ID of the canvas element
@@ -44,13 +46,14 @@ export default class Graph extends Canvas2D {
    * Starts the animation loop
    */
   startLoop() {
-    this.render();
     //  const loop = () => {
     //    this.render();
     //    console.log("Test");
     //    this.animationFrameId = requestAnimationFrame(loop);
     //  };
     //  loop();
+
+    this.render();
   }
 
   /**
@@ -73,11 +76,7 @@ export default class Graph extends Canvas2D {
     // Draw graph lines
     this.drawGraph();
 
-    this.cubePoints.forEach((point, index) => {
-      point.z -= 0.5;
-
-      console.log(index);
-
+    this.cubePoints.forEach((point) => {
       const projectedPoint = this.project(point);
 
       this.drawRectangle(
@@ -99,16 +98,17 @@ export default class Graph extends Canvas2D {
    * @returns {Vector2}
    */
   project(point) {
-    const projectedX = Math.round((point.x * this.fovFactor) / point.z);
-    const projectedY = Math.round((point.y * this.fovFactor) / point.z);
+    const effectiveZ = point.z + this.camera.z;
 
-    if (!isFinite(projectedX) || !isFinite(projectedY)) {
-      return new Vector2(2, 1);
+    // Check for invalid z values
+    if (effectiveZ <= 0) {
+      return new Vector2(0, 0); // Or handle invalid points appropriately
     }
 
-    const newPoint = new Vector2(projectedX, projectedY);
+    const projectedX = Math.round((point.x * this.fovFactor) / effectiveZ);
+    const projectedY = Math.round((point.y * this.fovFactor) / effectiveZ);
 
-    return newPoint;
+    return new Vector2(projectedX, projectedY);
   }
 
   /**
