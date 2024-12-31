@@ -25,7 +25,17 @@ export default class Canvas2D {
 
     /** @type {HTMLCanvasElement} */
     this.canvas = element;
-    this.context = this.canvas.getContext("2d");
+
+    const context = this.canvas.getContext("2d");
+
+    if (!context) {
+      const message = `Error initialising context`;
+      console.error(message);
+      throw new Error(message);
+    }
+
+    /** @type {CanvasRenderingContext2D} */
+    this.context = context;
 
     // Bind the resize method to maintain correct 'this' context
     this.boundResize = this.resize.bind(this);

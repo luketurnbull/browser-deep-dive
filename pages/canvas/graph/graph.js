@@ -1,11 +1,10 @@
 // @ts-check
 
 import Canvas2D from "./canvas-2d.js";
+import Vector2 from "./vector-2.js";
 
-const FILL_STYLE = "#333333";
-const SPACING = 20;
-const RECT_SIZE = 3;
-const BORDER_RADIUS = 1;
+const FILL_STYLE = "#FF0000";
+const SPACING = 40;
 
 export default class Graph extends Canvas2D {
   /**
@@ -26,17 +25,34 @@ export default class Graph extends Canvas2D {
    * @private
    */
   drawGraph() {
-    if (!this.context) return;
-
     this.context.clearRect(0, 0, this.width, this.height);
     this.context.fillStyle = FILL_STYLE;
 
     for (let x = 0; x < this.width; x += SPACING) {
-      for (let y = 0; y < this.height; y += SPACING) {
-        this.context.beginPath();
-        this.context.roundRect(x, y, RECT_SIZE, RECT_SIZE, BORDER_RADIUS);
-        this.context.fill();
-      }
+      const start = new Vector2(x, 0);
+      const end = new Vector2(x, this.height);
+      this.drawLine(start, end);
     }
+
+    console.log(this.height);
+
+    for (let y = 0; y < this.height; y += SPACING) {
+      const start = new Vector2(0, y);
+      const end = new Vector2(this.width, y);
+      this.drawLine(start, end);
+    }
+  }
+
+  /**
+   * Draws a line on the canvas, from one point to another
+   * @private
+   * @param {Vector2} start
+   * @param {Vector2} end
+   */
+  drawLine(start, end) {
+    this.context.beginPath();
+    this.context.moveTo(start.x, start.y);
+    this.context.lineTo(end.x, end.y);
+    this.context.stroke();
   }
 }
