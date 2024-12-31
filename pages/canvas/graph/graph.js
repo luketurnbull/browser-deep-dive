@@ -15,7 +15,7 @@ export default class Graph extends Canvas2D {
   /** @type {Vector3[]} */
   cubePoints = [];
   /** @type {Vector3} */
-  camera = new Vector3(0, 0, 3);
+  camera = new Vector3(0, 2, 3);
 
   /**
    * @param {string} canvasElementId - The ID of the canvas element
@@ -87,9 +87,6 @@ export default class Graph extends Canvas2D {
         "#FF0000"
       );
     });
-
-    // Draw rectangle
-    //  this.drawRectangle(10, 10, 300, 200, "#00FF00");
   }
 
   /**
@@ -99,11 +96,6 @@ export default class Graph extends Canvas2D {
    */
   project(point) {
     const effectiveZ = point.z + this.camera.z;
-
-    // Check for invalid z values
-    if (effectiveZ <= 0) {
-      return new Vector2(0, 0); // Or handle invalid points appropriately
-    }
 
     const projectedX = Math.round((point.x * this.fovFactor) / effectiveZ);
     const projectedY = Math.round((point.y * this.fovFactor) / effectiveZ);
@@ -127,41 +119,6 @@ export default class Graph extends Canvas2D {
       const end = new Vector2(this.width, y);
       this.drawLine(start, end, FILL_STYLE);
     }
-  }
-
-  /**
-   * Draws a line on the canvas, from one point to another
-   * @private
-   * @param {Vector2} start
-   * @param {Vector2} end
-   * @param {string} colour
-   */
-  drawLine(start, end, colour) {
-    this.context.fillStyle = colour;
-    this.context.beginPath();
-    this.context.moveTo(start.x, start.y);
-    this.context.lineTo(end.x, end.y);
-    this.context.stroke();
-  }
-
-  /**
-   * Draws a line on the canvas, from one point to another
-   * @private
-   * @param {number} x
-   * @param {number} y
-   * @param {number} width
-   * @param {number} height
-   * @param {string} colour
-   */
-  drawRectangle(x, y, width, height, colour) {
-    console.log(`
-            Draw rectangle:
-            x: ${x}
-            y: ${y}
-         `);
-    this.context.fillStyle = colour;
-    this.context.rect(x, y, width, height);
-    this.context.fill();
   }
 
   /**
