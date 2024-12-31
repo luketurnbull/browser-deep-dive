@@ -115,7 +115,17 @@ template.innerHTML = /*html*/ `
                   </li>
                 </ul>
               </div>
-          </li>
+            </li>
+            <li>
+              <a href="/pages/canvas/">Canvas</a>
+              <div class="dropdown">
+                <ul>
+                  <li>
+                    <a href="/pages/canvas/graph/">Graph</a>
+                  </li>
+                </ul>
+              </div>
+            </li>
           </ul>
         </nav>
     </div>
