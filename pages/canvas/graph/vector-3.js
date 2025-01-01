@@ -27,7 +27,36 @@ export default class Vector3 {
    */
   rotateZ(angle) {
     const originalX = this.x;
-    this.x = originalX * Math.cos(angle) - this.y * Math.sin(angle);
-    this.y = originalX * Math.sin(angle) + this.y * Math.cos(angle);
+    const originalY = this.y;
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    this.x = originalX * cos - originalY * sin;
+    this.y = originalX * sin + originalY * cos;
+  }
+
+  /**
+   * Rotates the vector on the x axis
+   * @param {number} angle
+   */
+  rotateX(angle) {
+    const originalZ = this.z;
+    const originalY = this.y;
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    this.z = originalZ * cos - originalY * sin;
+    this.y = originalZ * sin + originalY * cos;
+  }
+
+  /**
+   * Rotates the vector on the x axis
+   * @param {number} angle
+   */
+  rotateY(angle) {
+    const originalZ = this.z;
+    const originalX = this.x;
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    this.x = originalX * cos - originalZ * sin;
+    this.z = originalX * sin + originalZ * cos;
   }
 }

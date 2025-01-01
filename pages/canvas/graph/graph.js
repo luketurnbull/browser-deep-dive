@@ -104,7 +104,11 @@ export default class Graph extends Canvas2D {
     const rotationSpeed = Math.PI / 2; // Radians per second
     const angle = rotationSpeed * deltaTime;
 
-    this.cubePoints.forEach((point) => point.rotateZ(angle));
+    this.cubePoints.forEach((point) => {
+      // point.rotateZ(angle);
+      // point.rotateX(angle);
+      point.rotateY(angle);
+    });
   }
 
   /**
