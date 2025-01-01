@@ -86,14 +86,8 @@ export default class Canvas2D {
    * @param {string} colour
    */
   drawRectangle(x, y, width, height, colour) {
-    console.log(`
-            Draw rectangle:
-            x: ${x}
-            y: ${y}
-         `);
     this.context.fillStyle = colour;
-    this.context.rect(x, y, width, height);
-    this.context.fill();
+    this.context.fillRect(x - width / 2, y - width / 2, width, height);
   }
 
   destroy() {

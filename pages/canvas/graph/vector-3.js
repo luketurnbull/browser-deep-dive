@@ -20,4 +20,14 @@ export default class Vector3 {
     /** @type {number} */
     this.z = z;
   }
+
+  /**
+   * Rotates the vector on the z axis
+   * @param {number} angle
+   */
+  rotateZ(angle) {
+    const originalX = this.x;
+    this.x = originalX * Math.cos(angle) - this.y * Math.sin(angle);
+    this.y = originalX * Math.sin(angle) + this.y * Math.cos(angle);
+  }
 }

@@ -22,6 +22,8 @@ export default class Graph extends Canvas2D {
    */
   constructor(canvasElementId) {
     super(canvasElementId);
+    this.fovFactor = 400;
+    this.camera = new Vector3(0, 0, 5);
     this.init();
   }
 
@@ -29,15 +31,18 @@ export default class Graph extends Canvas2D {
    * Initialise everything, start animation loop
    */
   init() {
-    // Load points
-    for (let x = -1; x <= 1; x += 0.25) {
-      for (let y = -1; y <= 1; y += 0.25) {
-        for (let z = -1; z <= 1; z += 0.25) {
-          const vec3 = new Vector3(x, y, z);
-          this.cubePoints.push(vec3);
-        }
-      }
-    }
+    // Create a proper cube with 8 vertices
+    const size = 1;
+    this.cubePoints = [
+      new Vector3(-size, -size, -size),
+      new Vector3(size, -size, -size),
+      new Vector3(-size, size, -size),
+      new Vector3(size, size, -size),
+      new Vector3(-size, -size, size),
+      new Vector3(size, -size, size),
+      new Vector3(-size, size, size),
+      new Vector3(size, size, size),
+    ];
 
     this.startLoop();
   }
@@ -46,14 +51,15 @@ export default class Graph extends Canvas2D {
    * Starts the animation loop
    */
   startLoop() {
-    //  const loop = () => {
-    //    this.render();
-    //    console.log("Test");
-    //    this.animationFrameId = requestAnimationFrame(loop);
-    //  };
-    //  loop();
-
-    this.render();
+    let lastTimestamp = performance.now(); // Use performance.now for high precision
+    const loop = (currentTimestamp) => {
+      const deltaTime = (currentTimestamp - lastTimestamp) / 1000; // Convert ms to seconds
+      lastTimestamp = currentTimestamp;
+      this.update(deltaTime); // Update with delta time
+      this.render();
+      this.animationFrameId = requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop); // Start the loop
   }
 
   /**
@@ -74,7 +80,7 @@ export default class Graph extends Canvas2D {
     this.context.clearRect(0, 0, this.width, this.height);
 
     // Draw graph lines
-    this.drawGraph();
+    // this.drawGraph();
 
     this.cubePoints.forEach((point) => {
       const projectedPoint = this.project(point);
@@ -87,6 +93,18 @@ export default class Graph extends Canvas2D {
         "#FF0000"
       );
     });
+  }
+
+  /**
+   * Updates the state of the application
+   * @param {number} deltaTime - Time elapsed since the last frame in seconds
+   */
+  update(deltaTime) {
+    // Example: Rotate the cube points
+    const rotationSpeed = Math.PI / 2; // Radians per second
+    const angle = rotationSpeed * deltaTime;
+
+    this.cubePoints.forEach((point) => point.rotateZ(angle));
   }
 
   /**
