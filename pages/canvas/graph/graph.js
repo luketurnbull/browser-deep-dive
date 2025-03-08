@@ -32,16 +32,54 @@ export default class Graph extends Canvas2D {
    */
   init() {
     // Create a proper cube with 8 vertices
-    const size = 1;
+    // const 1 = 1;
     this.cubePoints = [
-      new Vector3(-size, -size, -size),
-      new Vector3(size, -size, -size),
-      new Vector3(-size, size, -size),
-      new Vector3(size, size, -size),
-      new Vector3(-size, -size, size),
-      new Vector3(size, -size, size),
-      new Vector3(-size, size, size),
-      new Vector3(size, size, size),
+      // TOP
+      // FIRST ROW
+      new Vector3(-1, -1, -1),
+      new Vector3(1, -1, -1),
+      new Vector3(0, -1, -1),
+
+      // SECOND ROW
+      new Vector3(-1, -1, 0),
+      new Vector3(1, -1, 0),
+      new Vector3(0, -1, 0),
+
+      // THIRD ROW
+      new Vector3(-1, -1, 1),
+      new Vector3(1, -1, 1),
+      new Vector3(0, -1, 1),
+
+      // BOTTOM
+      // FIRST ROW
+      new Vector3(-1, 1, -1),
+      new Vector3(1, 1, -1),
+      new Vector3(0, 1, -1),
+
+      // SECOND ROW
+      new Vector3(-1, 1, 0),
+      new Vector3(1, 1, 0),
+      new Vector3(0, 1, 0),
+
+      // THIRD ROW
+      new Vector3(-1, 1, 1),
+      new Vector3(1, 1, 1),
+      new Vector3(0, 1, 1),
+      //
+
+      // MIDDLE
+      // FIRST ROW
+      new Vector3(-1, 0, -1),
+      new Vector3(0, 0, -1),
+      new Vector3(1, 0, -1),
+      // SECOND ROW
+      new Vector3(-1, 0, 0),
+      new Vector3(0, 0, 0),
+      new Vector3(1, 0, 0),
+      // THIRD ROW
+      new Vector3(-1, 0, 1),
+      new Vector3(0, 0, 1),
+      new Vector3(1, 0, 1),
     ];
 
     this.startLoop();

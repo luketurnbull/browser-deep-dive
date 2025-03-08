@@ -15,6 +15,7 @@ export class WebGlFundamentalsOne extends WebGLCanvas {
   connectedCallback() {
     super.connectedCallback();
     this.drawTriangle();
+    this.render();
   }
 
   handleResize() {
@@ -22,7 +23,21 @@ export class WebGlFundamentalsOne extends WebGLCanvas {
     this.drawTriangle();
   }
 
-  drawTriangle() {
+  /**
+   * Renders the WebGL scene.
+   */
+  render() {
+    console.log(this.children);
+    // Render each child component
+    Array.from(this.children).forEach((child) => {
+      if (child instanceof Triangle) {
+        const vertices = child.getVertices();
+        this.drawTriangle(vertices);
+      }
+    });
+  }
+
+  drawTriangle(vertices = []) {
     const gl = this.gl;
 
     if (!gl) return;
@@ -76,11 +91,19 @@ export class WebGlFundamentalsOne extends WebGLCanvas {
     const positionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
-    gl.bufferData(
-      gl.ARRAY_BUFFER,
-      new Float32Array([100, 100, 400, 400, 800, 100]),
-      gl.STATIC_DRAW
-    );
+    const coords = new Float32Array([
+      // First triangle
+      ...vertices,
+      // Second triangle
+      700,
+      200,
+      800,
+      600,
+      1200,
+      50,
+    ]);
+
+    gl.bufferData(gl.ARRAY_BUFFER, coords, gl.STATIC_DRAW);
 
     const vertexArrayObject = gl.createVertexArray();
 
@@ -102,7 +125,7 @@ export class WebGlFundamentalsOne extends WebGLCanvas {
       offset
     );
 
-    const noOfTriangles = 1;
+    const noOfTriangles = coords.length / 6;
 
     gl.useProgram(program);
     gl.uniform2f(
@@ -114,4 +137,49 @@ export class WebGlFundamentalsOne extends WebGLCanvas {
   }
 }
 
+/**
+ * @class Triangle
+ * @extends HTMLElement
+ * @classdesc A Web Component that represents a triangle shape.
+ */
+class Triangle extends HTMLElement {
+  constructor() {
+    super();
+    this._vertices = [20, 20, 200, 500, 500, 20]; // Example vertices for a triangle
+  }
+
+  static get observedAttributes() {
+    return ["vertices"];
+  }
+
+  /**
+   * Called when an attribute is changed.
+   * @param {string} name - The name of the attribute that changed.
+   * @param {string} oldValue - The old value of the attribute.
+   * @param {string} newValue - The new value of the attribute.
+   */
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === "vertices") {
+      this.vertices = newValue.split(",").map(Number); // Convert to an array of numbers
+    }
+  }
+
+  /**
+   * Gets the vertices of the triangle.
+   * @returns {number[]} The vertices of the triangle.
+   */
+  getVertices() {
+    return this._vertices;
+  }
+
+  /**
+   * Sets the vertices of the triangle.
+   * @param {number[]} value - The new vertices for the triangle.
+   */
+  set vertices(value) {
+    this._vertices = value;
+  }
+}
+
+customElements.define("webgl-triangle", Triangle);
 customElements.define("webgl-fundamentals-one", WebGlFundamentalsOne);
