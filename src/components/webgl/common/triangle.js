@@ -44,6 +44,6 @@ export class Triangle {
     ]);
 
     gl.bufferData(gl.ARRAY_BUFFER, coords, gl.STATIC_DRAW);
-    gl.drawArrays(gl.TRIANGLES, 0, coords.length / 2);
+    return coords.length;
   }
 }

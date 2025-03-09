@@ -86,7 +86,8 @@ export class WebGlFundamentalsOne extends WebGLCanvas {
         Math.random() * 500,
         colour
       );
-      rectangle.render(gl, program);
+      let count = rectangle.render(gl, program);
+      gl.drawArrays(gl.TRIANGLES, 0, count / 2);
     }
   }
 

@@ -1,4 +1,3 @@
-import { Triangle } from "./triangle.js";
 import { Colour } from "./colour.js";
 import { Vector2 } from "./vector-2.js";
 
@@ -27,25 +26,39 @@ export class Rectangle {
    * @param {WebGLProgram} program
    */
   render(gl, program) {
+    const colourLocation = gl.getUniformLocation(program, "u_colour");
+
+    gl.uniform4f(
+      colourLocation,
+      this.colour.r,
+      this.colour.g,
+      this.colour.b,
+      this.colour.a
+    );
+
     const topLeft = new Vector2(this.x, this.y);
     const topRight = new Vector2(this.x + this.width, this.y);
     const bottomLeft = new Vector2(this.x, this.y + this.height);
     const bottomRight = new Vector2(this.x + this.width, this.y + this.height);
 
-    const triangleOne = new Triangle(
-      topLeft,
-      topRight,
-      bottomLeft,
-      this.colour
-    );
-    const triangleTwo = new Triangle(
-      topRight,
-      bottomRight,
-      bottomLeft,
-      this.colour
-    );
+    const coords = new Float32Array([
+      // Triangle one
+      topLeft.x,
+      topLeft.y,
+      topRight.x,
+      topRight.y,
+      bottomLeft.x,
+      bottomLeft.y,
+      // Triangle two
+      topRight.x,
+      topRight.y,
+      bottomLeft.x,
+      bottomLeft.y,
+      bottomRight.x,
+      bottomRight.y,
+    ]);
 
-    triangleOne.render(gl, program);
-    triangleTwo.render(gl, program);
+    gl.bufferData(gl.ARRAY_BUFFER, coords, gl.STATIC_DRAW);
+    return coords.length;
   }
 }
