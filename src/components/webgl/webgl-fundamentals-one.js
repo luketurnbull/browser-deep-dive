@@ -19,21 +19,19 @@ export class WebGlFundamentalsOne extends WebGLCanvas {
     this.render();
   }
 
-  handleResize() {
-    super.handleResize();
-    this.render();
-  }
-
   /**
    * Renders the WebGL scene.
    */
   render() {
+    super.handleResize();
     this.create2DProgram();
 
     const gl = this.gl;
     const program = this.program;
 
     if (!gl || !program) return;
+
+    console.log("hit");
 
     // Attribute locations
     const positionAttributeLocation = gl.getAttribLocation(
@@ -77,18 +75,16 @@ export class WebGlFundamentalsOne extends WebGLCanvas {
       this.canvas.height
     );
 
-    for (let i = 1; i < 30; i++) {
-      const colour = new Colour(Math.random(), Math.random(), Math.random(), 1);
-      const rectangle = new Rectangle(
-        Math.random() * 200,
-        Math.random() * 200,
-        Math.random() * 500,
-        Math.random() * 500,
-        colour
-      );
-      let count = rectangle.render(gl, program);
-      gl.drawArrays(gl.TRIANGLES, 0, count / 2);
-    }
+    const colour = new Colour(Math.random(), Math.random(), Math.random(), 1);
+    const rectangle = new Rectangle(
+      Math.random() * 200,
+      Math.random() * 200,
+      Math.random() * 500,
+      Math.random() * 500,
+      colour
+    );
+    let count = rectangle.render(gl, program);
+    gl.drawArrays(gl.TRIANGLES, 0, count / 2);
   }
 
   create2DProgram() {

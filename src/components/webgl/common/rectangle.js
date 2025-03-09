@@ -11,14 +11,16 @@ export class Rectangle {
    * @param {number} y - Starting y (top right).
    * @param {number} width - Width.
    * @param {number} height - Height.
-   * @param {Colour} colour - Colour
+   * @param {Colour|undefined} colour - Colour
    */
   constructor(x, y, height, width, colour) {
     this.x = x;
     this.y = y;
     this.height = height;
     this.width = width;
-    this.colour = colour;
+    if (colour) {
+      this.colour = colour;
+    }
   }
 
   /** renders the rectangle in the webgl context
@@ -26,15 +28,17 @@ export class Rectangle {
    * @param {WebGLProgram} program
    */
   render(gl, program) {
-    const colourLocation = gl.getUniformLocation(program, "u_colour");
+    if (this.colour) {
+      const colourLocation = gl.getUniformLocation(program, "u_colour");
 
-    gl.uniform4f(
-      colourLocation,
-      this.colour.r,
-      this.colour.g,
-      this.colour.b,
-      this.colour.a
-    );
+      gl.uniform4f(
+        colourLocation,
+        this.colour.r,
+        this.colour.g,
+        this.colour.b,
+        this.colour.a
+      );
+    }
 
     const topLeft = new Vector2(this.x, this.y);
     const topRight = new Vector2(this.x + this.width, this.y);
