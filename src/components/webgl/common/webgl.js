@@ -128,3 +128,74 @@ export class WebGL {
     return this.#gl;
   }
 }
+
+export class Program {
+  #program;
+
+  constructor(vertexSource, fragmentSource) {
+    this.webgl = WebGL.instance;
+    this.gl = this.webgl.getContext();
+    this.program = this.#createProgram(vertexSource, fragmentSource);
+  }
+
+  #createProgram(vertexSource, fragmentSource) {
+    const vertexShader = this.#createShader(
+      this.gl.VERTEX_SHADER,
+      vertexSource
+    );
+    const fragmentShader = this.#createShader(
+      this.gl.FRAGMENT_SHADER,
+      fragmentSource
+    );
+    const program = this.gl.createProgram();
+
+    this.gl.attachShader(program, vertexShader);
+    this.gl.attachShader(program, fragmentShader);
+    this.gl.linkProgram(program);
+
+    if (!this.gl.getProgramParameter(program, this.gl.LINK_STATUS)) {
+      const error = this.gl.getProgramInfoLog(program);
+      this.gl.deleteProgram(program);
+      throw new Error(`Error linking program: ${error}`);
+    }
+
+    return program;
+  }
+
+  #createShader(type, source) {
+    const shader = this.gl.createShader(type);
+    if (!shader) {
+      throw new Error("Failed to create shader.");
+    }
+    this.gl.shaderSource(shader, source);
+    this.gl.compileShader(shader);
+
+    if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
+      const error = this.gl.getShaderInfoLog(shader);
+      this.gl.deleteShader(shader);
+      throw new Error(`Error compiling shader: ${error}`);
+    }
+
+    return shader;
+  }
+
+  use() {
+    this.gl.useProgram(this.#program);
+  }
+
+  // Method to set attributes, uniforms, etc.
+  setAttribute(name, value) {
+    const location = this.gl.getAttribLocation(this.#program, name);
+    this.gl.vertexAttribPointer(
+      location,
+      value.size,
+      this.gl.FLOAT,
+      false,
+      0,
+      0
+    );
+    this.gl.enableVertexAttribArray(location);
+  }
+
+  // Additional methods for setting uniforms can be added here
+}
