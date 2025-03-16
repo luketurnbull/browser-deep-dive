@@ -34,10 +34,6 @@ export class WebGL {
         "Unable to initialize WebGL2. Your browser may not support it."
       );
     }
-
-    addEventListener("resize", () => {
-      this.resize();
-    });
   }
 
   /**
@@ -50,57 +46,6 @@ export class WebGL {
     }
 
     return WebGL.#instance;
-  }
-
-  /**
-   * Creates a shader of the given type.
-   * @param {number} type - The type of shader (e.g., gl.VERTEX_SHADER or gl.FRAGMENT_SHADER).
-   * @param {string} source - The GLSL source code for the shader.
-   * @returns {WebGLShader} The compiled shader.
-   */
-  createShader(type, source) {
-    const shader = this.#gl.createShader(type);
-    if (!shader) {
-      throw new Error("Failed to create shader.");
-    }
-
-    this.#gl.shaderSource(shader, source);
-    this.#gl.compileShader(shader);
-
-    // Check for compilation errors
-    if (this.#gl.getShaderParameter(shader, this.#gl.COMPILE_STATUS)) {
-      return shader; // shader is guaranteed to be non-null here
-    } else {
-      const error = this.#gl.getShaderInfoLog(shader);
-      this.#gl.deleteShader(shader);
-      throw new Error(`Error compiling shader: ${error}`);
-    }
-  }
-
-  /**
-   * Creates a WebGL2 program using the provided vertex and fragment shaders.
-   * @param {WebGLShader} vertexShader - The vertex shader.
-   * @param {WebGLShader} fragmentShader - The fragment shader.
-   * @returns {WebGLProgram} The created WebGL2 program.
-   */
-  createProgram(vertexShader, fragmentShader) {
-    const program = this.#gl.createProgram();
-    if (!program) {
-      throw new Error("Failed to create program.");
-    }
-
-    this.#gl.attachShader(program, vertexShader);
-    this.#gl.attachShader(program, fragmentShader);
-    this.#gl.linkProgram(program);
-
-    // Check for linking errors
-    if (!this.#gl.getProgramParameter(program, this.#gl.LINK_STATUS)) {
-      const error = this.#gl.getProgramInfoLog(program);
-      this.#gl.deleteProgram(program);
-      throw new Error(`Error linking program: ${error}`);
-    }
-
-    return program; // program is guaranteed to be non-null here
   }
 
   /**
@@ -120,6 +65,13 @@ export class WebGL {
     return false;
   }
 
+  clearCanvas() {
+    this.#gl.viewport(0, 0, this.#gl.canvas.width, this.#gl.canvas.height);
+    // Clear the canvas
+    this.#gl.clearColor(0, 1, 0, 1);
+    this.#gl.clear(this.#gl.COLOR_BUFFER_BIT);
+  }
+
   /**
    * Gets the WebGL2 rendering context.
    * @returns {WebGL2RenderingContext} The WebGL2 context.
@@ -130,27 +82,31 @@ export class WebGL {
 }
 
 export class Program {
-  #program;
+  program;
 
-  constructor(vertexSource, fragmentSource) {
-    this.webgl = WebGL.instance;
-    this.gl = this.webgl.getContext();
-    this.program = this.#createProgram(vertexSource, fragmentSource);
+  /**
+   * Creates a WebGL2 program using the provided vertex and fragment shaders.
+   * @param {WebGLShader} vertexShader - The vertex shader.
+   * @param {WebGLShader} fragmentShader - The fragment shader.
+   * @param {WebGL} gl The created WebGL2 program.
+   */
+  constructor(vertexShader, fragmentShader, gl) {
+    this.gl = gl.getContext();
+    this.program = this.createProgram(vertexShader, fragmentShader);
   }
 
-  #createProgram(vertexSource, fragmentSource) {
-    const vertexShader = this.#createShader(
-      this.gl.VERTEX_SHADER,
-      vertexSource
-    );
-    const fragmentShader = this.#createShader(
-      this.gl.FRAGMENT_SHADER,
-      fragmentSource
-    );
+  /**
+   * Creates a WebGL2 program using the provided vertex and fragment shaders.
+   * @param {WebGLShader} vertexShader - The vertex shader.
+   * @param {WebGLShader} fragmentShader - The fragment shader.
+   */
+  createProgram(vertexShader, fragmentShader) {
+    const vShader = this.createShader(this.gl.VERTEX_SHADER, vertexShader);
+    const fShader = this.createShader(this.gl.FRAGMENT_SHADER, fragmentShader);
     const program = this.gl.createProgram();
 
-    this.gl.attachShader(program, vertexShader);
-    this.gl.attachShader(program, fragmentShader);
+    this.gl.attachShader(program, vShader);
+    this.gl.attachShader(program, fShader);
     this.gl.linkProgram(program);
 
     if (!this.gl.getProgramParameter(program, this.gl.LINK_STATUS)) {
@@ -162,7 +118,7 @@ export class Program {
     return program;
   }
 
-  #createShader(type, source) {
+  createShader(type, source) {
     const shader = this.gl.createShader(type);
     if (!shader) {
       throw new Error("Failed to create shader.");
@@ -180,20 +136,22 @@ export class Program {
   }
 
   use() {
-    this.gl.useProgram(this.#program);
+    this.gl.useProgram(this.program);
+  }
+
+  /**
+   * Get location of attribute in current program
+   * @param {string} name
+   * @returns
+   */
+  getAttributeLocation(name) {
+    return this.gl.getAttribLocation(this.program, name);
   }
 
   // Method to set attributes, uniforms, etc.
-  setAttribute(name, value) {
-    const location = this.gl.getAttribLocation(this.#program, name);
-    this.gl.vertexAttribPointer(
-      location,
-      value.size,
-      this.gl.FLOAT,
-      false,
-      0,
-      0
-    );
+  setAttribute(name) {
+    const location = this.getAttributeLocation(name);
+    this.gl.vertexAttribPointer(location, 2, this.gl.FLOAT, false, 0, 0);
     this.gl.enableVertexAttribArray(location);
   }
 
