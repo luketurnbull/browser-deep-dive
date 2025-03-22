@@ -1,5 +1,7 @@
 // @ts-check
 
+import { Colour } from "./colour.js";
+
 export class WebGL {
   /**
    * The private instance of the WebGL class.
@@ -19,13 +21,20 @@ export class WebGL {
    */
   #gl;
 
+  /**
+   * Background colour of the canvas
+   * @type {Colour}
+   */
+  #backgroundColour;
+
   constructor() {}
 
   /**
    * Init
    * @param {HTMLCanvasElement} canvas - The canvas element to initialize WebGL2.
+   * @param {Colour} backgroundColour - The background colour of the canvas
    */
-  init(canvas) {
+  init(canvas, backgroundColour) {
     this.#canvas = canvas;
     // @ts-ignore - presume it's never null as we throw an error message after
     this.#gl = canvas.getContext("webgl2");
@@ -34,6 +43,8 @@ export class WebGL {
         "Unable to initialize WebGL2. Your browser may not support it."
       );
     }
+
+    this.#backgroundColour = backgroundColour;
   }
 
   /**
@@ -68,7 +79,12 @@ export class WebGL {
   clearCanvas() {
     this.#gl.viewport(0, 0, this.#gl.canvas.width, this.#gl.canvas.height);
     // Clear the canvas
-    this.#gl.clearColor(0, 1, 0, 1);
+    this.#gl.clearColor(
+      this.#backgroundColour.r,
+      this.#backgroundColour.g,
+      this.#backgroundColour.b,
+      this.#backgroundColour.a
+    );
     this.#gl.clear(this.#gl.COLOR_BUFFER_BIT);
   }
 
@@ -140,19 +156,28 @@ export class Program {
   }
 
   /**
-   * Get location of attribute in current program
+   * Creates an attribute
    * @param {string} name
-   * @returns
    */
-  getAttributeLocation(name) {
-    return this.gl.getAttribLocation(this.program, name);
-  }
-
-  // Method to set attributes, uniforms, etc.
   setAttribute(name) {
-    const location = this.getAttributeLocation(name);
+    const location = this.gl.getAttribLocation(this.program, name);
     this.gl.vertexAttribPointer(location, 2, this.gl.FLOAT, false, 0, 0);
     this.gl.enableVertexAttribArray(location);
+  }
+
+  /**
+   * Creates an uniform
+   * @param {string} name
+   * @returns {WebGLUniformLocation}
+   */
+  getUniformLocation(name) {
+    const location = this.gl.getUniformLocation(this.program, name);
+
+    if (!location) {
+      throw new Error("Location not found");
+    }
+
+    return location;
   }
 
   // Additional methods for setting uniforms can be added here

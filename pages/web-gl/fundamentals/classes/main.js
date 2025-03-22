@@ -1,21 +1,28 @@
 // @ts-check
 
+import { Colour } from "../../../../src/components/webgl/common/colour.js";
+import { Vector2 } from "../../../../src/components/webgl/common/vector-2.js";
 import {
   WebGL,
   Program,
 } from "../../../../src/components/webgl/common/webgl.js";
 
 const vertexShaderSource = /* glsl */ `#version 300 es
-  // an attribute is an input (in) to a vertex shader.
-  // It will receive data from a buffer
-  in vec4 a_position;
+  in vec2 a_position;
+  
+  uniform vec2 u_resolution;
 
-  // all shaders have a main function
   void main() {
+    // convert the position from pixels to 0.0 to 1.0
+    vec2 zeroToOne = a_position / u_resolution;
 
-    // gl_Position is a special variable a vertex shader
-    // is responsible for setting
-    gl_Position = a_position;
+    // convert from 0->1 to 0->2
+    vec2 zeroToTwo = zeroToOne * 2.0;
+
+    // convert from 0->2 to -1->+1 (clip space)
+    vec2 clipSpace = zeroToTwo - 1.0;
+
+    gl_Position = vec4(clipSpace, 0, 1);
   }
 `;
 
@@ -40,7 +47,7 @@ class Canvas {
     );
 
     this.webGl = WebGL.instance;
-    this.webGl.init(canvas);
+    this.webGl.init(canvas, new Colour(0, 0, 0, 0));
     this.gl = this.webGl.getContext();
     this.render();
 
@@ -58,32 +65,45 @@ class Canvas {
 
     const positionBuffer = this.gl.createBuffer();
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer);
+
+    const a = new Vector2(10, 20);
+    const b = new Vector2(80, 20);
+    const c = new Vector2(10, 30);
+
     // three 2d points
-    const positions = [0, 0, 0, 0.5, 0.7, 0];
+    const positions = [a.x, a.y, b.x, b.y, c.x, c.y];
     this.gl.bufferData(
       this.gl.ARRAY_BUFFER,
       new Float32Array(positions),
       this.gl.STATIC_DRAW
     );
+
     const vao = this.gl.createVertexArray();
     this.gl.bindVertexArray(vao);
-
-    // Create position attribute
-    program.setAttribute("a_position");
 
     this.webGl.resize();
     this.webGl.clearCanvas();
 
     program.use();
 
-    const primitiveType = this.gl.TRIANGLES;
+    // Create position attribute
+    program.setAttribute("a_position");
+    const resolutionUniform = program.getUniformLocation("u_resolution");
 
-    this.gl.drawArrays(primitiveType, 0, positions.length / 2);
+    // Pass in the canvas resolution so we can convert from
+    // pixels to clipspace in the shader
+    this.gl.uniform2f(
+      resolutionUniform,
+      this.gl.canvas.width,
+      this.gl.canvas.height
+    );
+
+    this.gl.drawArrays(this.gl.TRIANGLES, 0, positions.length / 2);
   }
 }
 
 function main() {
-  const canvas = new Canvas();
+  new Canvas();
 }
 
 main();
