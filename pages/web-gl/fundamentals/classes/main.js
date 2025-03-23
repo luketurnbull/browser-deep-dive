@@ -135,8 +135,4 @@ class Canvas {
   }
 }
 
-function main() {
-  new Canvas();
-}
-
-main();
+new Canvas();
