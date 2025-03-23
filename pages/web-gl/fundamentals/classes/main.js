@@ -1,11 +1,9 @@
 // @ts-check
 
-import { Colour } from "../../../../src/components/webgl/common/colour.js";
-import { Vector2 } from "../../../../src/components/webgl/common/vector-2.js";
-import {
-  WebGL,
-  Program,
-} from "../../../../src/components/webgl/common/webgl.js";
+import { WebGL } from "../../../../src/components/webgl/library/webgl.js";
+import { Rectangle } from "../../../../src/components/webgl/library/rectangle.js";
+import { Program } from "../../../../src/components/webgl/library/program.js";
+import { Colour } from "../../../../src/components/webgl/library/colour.js";
 
 const vertexShaderSource = /* glsl */ `#version 300 es
   in vec2 a_position;
@@ -123,62 +121,6 @@ class Canvas {
     this.gl.uniform4f(colourUniform, colour.r, colour.g, colour.b, colour.a);
 
     this.gl.drawArrays(this.gl.TRIANGLES, 0, positions.length / 2);
-  }
-}
-
-class Triangle {
-  /**
-   *
-   * @param {Vector2} a - Point A
-   * @param {Vector2} b - Point B
-   * @param {Vector2} c - Point C
-   */
-  constructor(a, b, c) {
-    this.a = a;
-    this.b = b;
-    this.c = c;
-  }
-
-  /**
-   *
-   * @returns {number[]} numbered array of coordinates
-   */
-  toArray() {
-    return [this.a.x, this.a.y, this.b.x, this.b.y, this.c.x, this.c.y];
-  }
-}
-
-class Rectangle {
-  /**
-   *
-   * @param {number} x - Starting x (left)
-   * @param {number} y - Starting y (top)
-   * @param {number} width - Width of Rectangle
-   * @param {number} height - Height of Rectangle
-   */
-  constructor(x, y, width, height) {
-    this.gl = WebGL.instance.getContext();
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
-
-    // Rectangle is formed from two triangles and four points
-    const topLeft = new Vector2(this.x, this.y);
-    const topRight = new Vector2(this.x + this.width, this.y);
-    const bottomLeft = new Vector2(this.x, this.y + this.height);
-    const bottomRight = new Vector2(this.x + this.width, this.y + this.height);
-
-    this.a = new Triangle(topLeft, topRight, bottomLeft);
-    this.b = new Triangle(topRight, bottomLeft, bottomRight);
-  }
-
-  /**
-   *
-   * @returns {number[]} numbered array of coordinates
-   */
-  toArray() {
-    return [...this.a.toArray(), ...this.b.toArray()];
   }
 }
 
