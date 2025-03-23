@@ -22,6 +22,12 @@ export class WebGL {
   #gl;
 
   /**
+   * The Vertex Object Array.
+   * @type {WebGLVertexArrayObject}
+   */
+  #vao;
+
+  /**
    * Background colour of the canvas
    * @type {Colour}
    */
@@ -45,6 +51,9 @@ export class WebGL {
     }
 
     this.#backgroundColour = backgroundColour;
+
+    this.#vao = this.#gl.createVertexArray();
+    this.#gl.bindVertexArray(this.#vao);
   }
 
   /**

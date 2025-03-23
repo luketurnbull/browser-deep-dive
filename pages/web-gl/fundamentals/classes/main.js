@@ -56,6 +56,8 @@ class Canvas {
       fragmentShaderSource,
       this.webGl
     );
+
+    this.setupAttributesAndUniforms();
     this.render();
 
     document.addEventListener("resize", () => {
@@ -63,19 +65,12 @@ class Canvas {
     });
   }
 
-  render() {
+  setupAttributesAndUniforms() {
     const positionBuffer = this.gl.createBuffer();
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer);
 
-    const vao = this.gl.createVertexArray();
-    this.gl.bindVertexArray(vao);
-
     // Create position attribute
     this.program.setAttribute("a_position");
-
-    this.webGl.resize();
-    this.webGl.clearCanvas();
-
     this.program.use();
 
     // Pass in resolution uniform to transform clip space to pixels
@@ -87,35 +82,47 @@ class Canvas {
       this.gl.canvas.width,
       this.gl.canvas.height
     );
+  }
+
+  render() {
+    this.webGl.resize();
+    this.webGl.clearCanvas();
 
     for (let i = 0; i < 10; i++) {
-      const rectangle = new Rectangle(
-        Math.random() * (50 + i),
-        Math.random() * (50 + i),
-        Math.random() * (200 + i),
-        Math.random() * (200 + i)
+      this.drawRectangle(
+        Math.random() * 100,
+        Math.random() * 100,
+        Math.random() * 100,
+        Math.random() * 100,
+        new Colour(Math.random(), Math.random(), Math.random(), 1)
       );
-
-      // three 2d points
-      const positions = rectangle.toArray();
-      this.gl.bufferData(
-        this.gl.ARRAY_BUFFER,
-        new Float32Array(positions),
-        this.gl.STATIC_DRAW
-      );
-
-      const colourUniform = this.program.getUniformLocation("u_colour");
-
-      this.gl.uniform4f(
-        colourUniform,
-        Math.random(),
-        Math.random(),
-        Math.random(),
-        1
-      );
-
-      this.gl.drawArrays(this.gl.TRIANGLES, 0, positions.length / 2);
     }
+  }
+
+  /**
+   *
+   * @param {number} x
+   * @param {number} y
+   * @param {number} width
+   * @param {number} height
+   * @param {Colour} colour
+   */
+  drawRectangle(x, y, width, height, colour) {
+    const rectangle = new Rectangle(x, y, width, height);
+
+    // three 2d points
+    const positions = rectangle.toArray();
+    this.gl.bufferData(
+      this.gl.ARRAY_BUFFER,
+      new Float32Array(positions),
+      this.gl.STATIC_DRAW
+    );
+
+    const colourUniform = this.program.getUniformLocation("u_colour");
+
+    this.gl.uniform4f(colourUniform, colour.r, colour.g, colour.b, colour.a);
+
+    this.gl.drawArrays(this.gl.TRIANGLES, 0, positions.length / 2);
   }
 }
 
@@ -132,6 +139,10 @@ class Triangle {
     this.c = c;
   }
 
+  /**
+   *
+   * @returns {number[]} numbered array of coordinates
+   */
   toArray() {
     return [this.a.x, this.a.y, this.b.x, this.b.y, this.c.x, this.c.y];
   }
@@ -162,6 +173,10 @@ class Rectangle {
     this.b = new Triangle(topRight, bottomLeft, bottomRight);
   }
 
+  /**
+   *
+   * @returns {number[]} numbered array of coordinates
+   */
   toArray() {
     return [...this.a.toArray(), ...this.b.toArray()];
   }
