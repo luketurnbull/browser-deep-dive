@@ -5,6 +5,15 @@ import { Rectangle } from "../../../../src/components/webgl/library/rectangle.js
 import { Program } from "../../../../src/components/webgl/library/program.js";
 import { Colour } from "../../../../src/components/webgl/library/colour.js";
 
+const UNIFORMS = {
+  resolution: "u_resolution",
+  colour: "u_colour",
+};
+
+const ATTRIBUTES = {
+  position: "a_position",
+};
+
 const vertexShaderSource = /* glsl */ `#version 300 es
   in vec2 a_position;
   
@@ -68,11 +77,13 @@ class Canvas {
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer);
 
     // Create position attribute
-    this.program.setAttribute("a_position");
+    this.program.setAttribute(ATTRIBUTES.position);
     this.program.use();
 
     // Pass in resolution uniform to transform clip space to pixels
-    const resolutionUniform = this.program.getUniformLocation("u_resolution");
+    const resolutionUniform = this.program.getUniformLocation(
+      UNIFORMS.resolution
+    );
     // Pass in the canvas resolution so we can convert from
     // pixels to clipspace in the shader
     this.gl.uniform2f(
@@ -116,7 +127,7 @@ class Canvas {
       this.gl.STATIC_DRAW
     );
 
-    const colourUniform = this.program.getUniformLocation("u_colour");
+    const colourUniform = this.program.getUniformLocation(UNIFORMS.colour);
 
     this.gl.uniform4f(colourUniform, colour.r, colour.g, colour.b, colour.a);
 
